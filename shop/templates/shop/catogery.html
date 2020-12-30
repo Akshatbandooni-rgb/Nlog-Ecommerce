@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{catogery.catogery_name}}
+{% endblock title %}
+
+
+{% block style %}
+<style>
+    .mydiv {
+        min-height: xxx;
+        overflow: hidden;
+    }
+
+    .body {
+        font-family: 'Baloo Thambi 2', cursive;
+    }
+
+    .Catogeryname {
+        font-family: 'Baloo Thambi 2', cursive;
+    }
+</style>
+{% endblock style %}
+
+
+{% block content %}
+<!-- py-4 pl-4 pr-4 p-md-5 mb-4 -->
+<div class="row">
+    <div class="col-sm-3">
+        <form method="POST" class="" action="{% url 'filterbybrand' %}">
+            {% csrf_token %}
+            <div class="form-group col-md-8 my-2">
+                <input type="hidden" name="catogery" value="{{currentcatogery.catogery_name}}">
+                <label for="brand" class="text-lg-dark ml-1 badge badge-info">Brand</label>
+                <select id="brand" name="brand" class="form-control">
+                    <option selected>Choose..</option>
+                    {% for brand in brands %}
+                    <option>{{brand.name}}</option>
+                    {% endfor %}
+
+                </select>
+                <button type="submit" class="btn btn-success my-1">Filter</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-9">
+        <div class=" px-4 pb-4 text-white rounded bg-white m-2 mydiv border-light">
+            <div class="px-0">
+                <p class="lead my-3 text-dark fw-bold Catogeryname"><strong>{{currentcatogery.catogery_name}}</strong>
+                </p>
+                <p class="lead my-3 text-dark fw-bold">Whether you’re lounging at home or having a house party, music
+                    can
+                    instantly
+                    cheer you up. To ensure that you have an amazing listening experience, you must have a good speaker
+                    system at your disposal. From Philips subwoofers and Intex soundbars to JBL boombox and JBL flip 4
+                    speakers, music systems may come in different types and sizes, so you can pick one as per your
+                    requirements and your budget. A few things to consider before buying a sound system are the power
+                    output, drivers, frequency range and its connectivity options. The power output can be anywhere
+                    between
+                    20 W to 300 W. Higher the power output, more powerful and louder the sound. The multiple
+                    connectivity of
+                    the sound system helps you connect it to external devices with ease. Apart from an audio jack, sound
+                    systems may also have Bluetooth connectivity to help you stream music wirelessly. Online stores have
+                </p>
+            </div>
+        </div>
+        <div class=" container-fluid">
+            <div class="row mx-2">
+                {% for product in products %}
+                <div class="card mb-3 mx-2" style="width: 18rem;">
+                    <img class="card-img-top my-1" src="{{ product.productimage.url }}" alt="Card image cap"
+                        height="286" width="262">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{product.product_name}}</h5>
+                        <p class="card-text text-dark">{{product.description}}</p>
+                        <p class="card-text text-dark">{{product.price}}</p>
+                        <a href="{% url 'productbysku' sku=product.product_sku %}"
+                            class="btn btn-info btn-lg btn-block">Explore</a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

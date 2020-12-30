@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load cart %}
+
+{% block title %}
+{{product.title}}
+{% endblock title %}
+
+
+{% block style %}
+<style>
+    .body {
+        font-family: 'Baloo Thambi 2', cursive;
+    }
+
+    .productName {
+        font-family: 'Baloo Thambi 2', cursive;
+    }
+</style>
+{% endblock style %}
+
+
+{% block content %}
+<div class="row my-2">
+    <div class="col-md-4">
+        <div class="card my-4 mx-2">
+            <div class="card-body">
+                <img src="{{ product.productimage.url }}" alt="" height="430" width="470">
+                <div class="  card-body">
+
+                    {% if product|isIncart:request.session.cart %}
+                    <div class=" py-2">
+                        <div class="row p-0 no-gutters">
+                            <div class="col-2">
+                                <form method="POST" class="col" action="{% url 'managecart' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="remove" value="True">
+                                    <input type="hidden" name="productid" id="productid" value="{{product.product_id}}">
+                                    <input type="submit" value="-" class="btn btn-secondary btn-block btn-lg"
+                                        style="padding-right: 23px; padding-left: 15px;">
+                                </form>
+                            </div>
+                            <div class="col text-center text-dark ml-3" style="padding-top: 10px;">
+                                <p>{{product|cartCount:request.session.cart}} in Cart</p>
+                            </div>
+
+                            <div class="col-2 mr-1">
+                                <form method="POST" class="col" action="{% url 'managecart' %}">
+                                    {% csrf_token %}
+                                    <input hidden type="text" name="remove" value="False">
+                                    <input type="hidden" name="productid" id="productid" value="{{product.product_id}}">
+                                    <input type="submit" value="+" class="btn btn-secondary btn-block btn-lg"
+                                        style="padding-right: 23px; padding-left: 15px;">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="">
+                        <form method="POST" class="form-inline" action="{% url 'managecart' %}">
+                            {% csrf_token %}
+                            <input hidden type="text" name="remove" value="False">
+                            <input type="hidden" name="productid" id="productid" value="{{product.product_id}}">
+                            <button type="submit" class="btn btn-info btn-lg my-2 btn-block">Add to Cart</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7 ml-1">
+        <div class="card my-4 mx-1">
+            <div class="card-body">
+                <h1 class="productName">{{product.product_name}}</h1>
+                <div class="description  text-secondary">
+                    <h2>{{product.description}}</h2>
+                </div>
+                <div>
+                    <h2>
+                        <p> &#8377; {{product.price}}</p>
+                    </h2>
+                </div>
+                <div class="mb-2">
+                    <h3>Bank Offer10% off on Federal Bank Debit Cards, up to ₹1500. On orders of ₹4999 and above
+                    </h3>
+                    <br>
+                    <h3>Bank Offer5% Unlimited Cashback on Flipkart Axis Bank Credit Card</h3><br>
+                    <h3>Bank Offer₹100 Off on BOB Mastercard debit card first time transaction, Terms and Condition
+                        apply</h3><br>
+                    <h3>Partner OfferBuy now and Get 6 months Free Spotify Premium Trial</h3><br>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

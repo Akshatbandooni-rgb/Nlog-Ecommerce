@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Orders
+{% endblock title %}
+
+{% block style %}
+<style>
+    .body {
+        font-family: 'Baloo Thambi 2', cursive;
+    }
+</style>
+{% endblock style %}
+
+{% load cart %}
+
+
+{% block content %}
+<div class="conatiner-fluid my-4 p-4">
+    <div class="border p-4 m-4">
+
+        {% if not orderpresent %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title display-4">You have not ordered anything yet.</h5>
+                <p class="card-text"></p>
+                <div class="text-info">
+                    <p class="lead">Wanna shop? .</p>
+                </div>
+                <a href="{% url 'shopHome' %}" class="btn btn-primary pull-right">Shop Now</a>
+            </div>
+        </div>
+        {% else %}
+        <p class="display-4"> Your Orders</p>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for order in orders %}
+                {% for queryset in productlist %}
+                {% for product in queryset %}
+
+                {% if product|belongsToOrder:order %}
+                <tr>
+
+                    <td><img src="{{ product.productimage.url }}" alt="" class="rounded-circle" style="height: 80px;">
+                    </td>
+                    <td>{{product.product_name}}</td>
+                    <td>{{product|productquantity:order}}</td>
+                    <td>{{product|priceByQuantity:order}}</td>
+
+                    {% if order.iscompleted %}
+                    <td>
+                        <small class="badge badge-success badge-pill">Delivered</small>
+                    </td>
+                    {% else %}
+                    <td>
+                        <small class="badge badge-warning badge-pill">Pending</small>
+                    </td>
+                    {% endif %}
+
+
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+        {% endif %}
+    </div>
+
+
+
+</div>
+{% endblock content %}

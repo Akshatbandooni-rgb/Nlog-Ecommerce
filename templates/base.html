@@ -1,0 +1,321 @@
+<!doctype html>
+{% load cart %}
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@500&display=swap" rel="stylesheet">
+
+
+    <title>
+        {% block title %}
+
+        {% endblock title %}
+    </title>
+</head>
+
+
+{% block style %}
+
+{% endblock style %}
+
+
+<body class="body">
+    <header>
+        <!-- Navbar Starts -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+            <a class="navbar-brand" href="#">
+                <img src="/static/images/logo.png" alt="" width="70" height="50">
+            </a>
+            <!-- <a class="navbar-brand text-light " href="#">Nlog</a> -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active mx-3">
+                        <a class="nav-link text-light" href="{% url 'shopHome' %}">Home <span
+                                class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item dropdown mx-3">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            About
+                        </a>
+                        <div class="dropdown-menu  bg-primary " aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-light bg-primary" href="{% url 'aboutus' %}">About US</a>
+                        </div>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item active mx-3 py-1">
+                        <span class="lead"> <a class=" badge badge-dark badge-pill"
+                                href="{% url 'displaycart' %}">Cart({{request.session.cart|totalCartCount}})</a></span>
+                    </li>
+                    {% endif %}
+
+                </ul>
+                <form class="d-flex" style="padding-left: 600px; margin-right: 10px;">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                </form>
+
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav mr-auto" style="padding-left: 80px;">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{request.user.username}}
+                        </a>
+                        <div class="dropdown-menu  bg-primary " aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-light bg-primary" href="{% url 'displayorders' %}">Orders</a>
+                            <form method="POST" action="{% url 'logout' %}" style="margin-left: 11px;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Logout</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+
+                {% endif %}
+
+                {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                {% endif %}
+
+
+
+            </div>
+        </nav>
+        <!-- Navbar Ends -->
+    </header>
+
+    <!-- Second Navbar -->
+    <!-- http://127.0.0.1:8000/shop/catogery/{{catogery.catogery_name}} -->
+    <div class="nav-scroller py-1  bg-warning ">
+        <nav class="nav d-flex justify-content-between border-light">
+
+            {% for catogery in catogries %}
+            <a class="p-2 link-secondary text-dark mb-0 ml-2 mr-2"
+                href="{% url 'catogery' slug=catogery.catogery_name %}"><strong><em>{{catogery.catogery_name}}</em></strong></a>
+
+            {% endfor %}
+
+        </nav>
+    </div>
+    <!-- Second Navbar ends -->
+    {% if messages %}
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-0" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+
+    <!-- Main Container -->
+    <main>
+
+        {% block content %}
+
+        {% endblock content %}
+
+    </main>
+    <!-- Main Container Ends -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+
+    {% block script %}
+
+    {% endblock script %}
+
+    <footer class="bg-dark">
+
+        <div class="bg-primary">
+            <div class="container">
+
+                <!-- Grid row-->
+                <div class="row py-4 d-flex align-items-center">
+
+                    <!-- Grid column -->
+                    <div class="col-md-6 col-lg-5 text-center text-light text-md-left mb-4 mb-md-0">
+                        <h6 class="mb-0">Get connected with us on social networks!</h6>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-6 col-lg-7 text-center text-md-right text-light">
+
+                        <!-- Github -->
+                        <a href="https://github.com/Akshatbandooni-rgb" class="rounded">
+                            <i class="fa fa-github  text-white" style="font-size:24px"></i>
+                        </a>
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/what_d_duck/" class="rounded ml-4">
+                            <i class="fa fa-instagram text-white" style="font-size:24px"></i>
+                        </a>
+                        <!-- Linkedin-->
+                        <a href="https://www.linkedin.com/in/akshat-bandooni-846596174/" class="rounded ml-4">
+                            <i class="fa fa-linkedin text-white" style="font-size:24px"></i>
+                        </a>
+                        <!--Facebook -->
+                        <a href="https://www.facebook.com/akshat.bandooni.5/" class="rounded ml-4">
+                            <i class="fa fa-facebook text-white" style="font-size:24px"></i>
+                        </a>
+
+                    </div>
+                    <!-- Grid column -->
+
+                </div>
+                <!-- Grid row-->
+
+            </div>
+        </div>
+
+        <!-- Footer Links -->
+        <div class=" container-fluid">
+            <div class="container  bg-dark text-center text-md-left pt-4 pt-md-5">
+
+                <!-- Grid row -->
+                <div class="row mt-1 mt-md-0 mb-4 mb-md-0">
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mx-auto mt-3 mt-md-0 mb-0 mb-md-4 text-light">
+
+                        <!-- Links -->
+                        <h5>About me</h5>
+                        <hr class="color-primary mb-4 mt-0 d-inline-block mx-auto w-60">
+
+                        <p class="foot-desc mb-0 text-light">Here you can use rows and columns to organize your
+                            footer content.
+                            Lorem
+                            ipsum dolor sit amet,
+                            consectetur
+                            adipisicing elit.</p>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-md-none">
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mx-auto mt-3 mt-md-0 mb-0 mb-md-4 text-light">
+
+                        <!-- Links -->
+                        <h5>Products</h5>
+                        <hr class=" mb-4 mt-0 d-inline-block mx-auto w-60 ">
+
+                        <ul class="list-unstyled foot-desc">
+                            <li class="mb-2 text-light">
+                                <a href="#!" class=" text-light">Link1</a>
+                            </li>
+                            <li class="mb-2 text-light">
+                                <a href="#!" class=" text-light">Link2</a>
+                            </li>
+                            <li class="mb-2 text-light">
+                                <a href="#!" class=" text-light">Link3</a>
+                            </li>
+                            <li class="mb-2 text-light">
+                                <a href="#!" class=" text-light">Link4</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-md-none">
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mx-auto mt-3 mt-md-0 mb-0 mb-md-4 text-light">
+
+                        <!-- Links -->
+                        <h5>Useful links</h5>
+                        <hr class="color-primary mb-4 mt-0 d-inline-block mx-auto w-60">
+
+                        <ul class="list-unstyled foot-desc">
+                            <li class="mb-2">
+                                <a href="#!" class=" text-light">Link1</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#!" class=" text-light">Link2</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#!" class=" text-light">Link3</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#!" class=" text-light">Link4</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-md-none">
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mx-auto mt-3 mt-md-0 mb-0 mb-md-4 text-light">
+
+                        <!-- Links -->
+                        <h5>Contacts</h5>
+                        <hr class="color-primary mb-4 mt-0 d-inline-block mx-auto w-60">
+
+                        <ul class="fa-ul foot-desc ml-4">
+                            <li class="mb-2 text-light"><span class="fa-li"><i class="far fa-map"></i></span>Address
+                                Line1
+                            </li>
+                            <li class="mb-2 text-light"><span class="fa-li"><i
+                                        class="fas fa-phone-alt"></i></span>PhoneNo.
+                            </li>
+                            <li class="mb-2 text-light"><span class="fa-li"><i class="far fa-envelope"></i></span>Email
+                            </li>
+                            <li class="text-light"><span class="fa-li"><i class=""></i></span>Another Detail</li>
+                        </ul>
+
+                    </div>
+                    <!-- Grid column -->
+
+                </div>
+                <!-- Grid row -->
+
+            </div>
+            <!-- Footer Links -->
+
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3 text-light">© 2020 Copyright
+            </div>
+            <!-- Copyright -->
+        </div>
+    </footer>
+
+</body>
+
+</html>
